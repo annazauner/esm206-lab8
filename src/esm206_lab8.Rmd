@@ -33,6 +33,39 @@ Make a subset calles homes_sub that only contains observations (rows) where the 
 
 ```{r}
 homes_sub <- homes %>% 
-  filter(City %in% c("San Luis Obsipo", "Arroyo Grande", "Atascadero", "Santa Maria-Orcutt"))
+  filter(City %in% c("San Luis Obispo", "Arroyo Grande", "Atascadero", "Santa Maria-Orcutt"))
+```
+
+
+## Do a litle exploring of our data 
+
+Summary statistics (home price, based on city and sale status)
+
+Find and return in a nice summary table the mean and standard deviation of home price, grouped by city and sale status
+
+
+```{r}
+homes_summary <- homes_sub %>% 
+  group_by(City, Status) %>% 
+  summarize(mean_price = mean(Price, na.rm = TRUE),
+            sd_price = sd(Price, na.rm = TRUE))
+
+## Actually I dont even wanna run this code: eval = FALSE
+
+ggplot(data = homes_sub, aes(x = Price))+
+  geom_density(aes(color = City, fill = City), alpha = 0.3)+
+  scale_x_continuous(limits = c(0, 3e6))
+
+# Inside aes if referring to variable, outside aes if referring to constant
+
+# alpha is transparency.. alpha 0 = transparent alpha 1 = totally opaque 
+```
+
+Explore the relationship (visual data exploration) between square footage and home price. Change the point COLOR by City and the point shape by sale status
+
+```{r}
+ggplot(data = homes_sub, aes(x = SqFt, y = Price))+
+  geom_point(aes(color = City, shape = Status))+
+  geom_smooth(method = lm)
 ```
 
