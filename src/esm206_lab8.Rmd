@@ -68,4 +68,82 @@ ggplot(data = homes_sub, aes(x = SqFt, y = Price))+
   geom_point(aes(color = City, shape = Status))+
   geom_smooth(method = lm)
 ```
+## Model the relationship with home price as DV
+
+```{r}
+homes_lm1 <- lm(Price ~ City + Bedrooms + Bathrooms + SqFt + PricePerSqFt + Status, data = homes_sub)
+
+# Make a subset that only contains the quantitiative variables
+
+homes_sub_1 <- homes %>% 
+  select(Price:PricePerSqFt)
+
+homes_cor <- cor(homes_sub_1)
+
+homes_cor
+
+corrplot(homes_cor, method = 'ellipse')
+```
+
+## Refernces
+
+- see by putting homes_lm1 into console 
+- DOesnt make sense - additional bedrooms would decrease home price
+                    - regular sale would be lower price than foreclosure
+                    
+- Should probably remove something... redundant 
+
+```{r}
+# How would I explore diagnostic plots?
+
+plot(homes_lm1)
+```
+
+Try another model (homes_lm2) where we simplify this a but:
+-City
+-SqFt
+-Status
+
+```{r}
+homes_lm2 <- lm(Price ~ City + SqFt + Status, data = homes_sub)
+
+# Or just call this in the console
+
+homes_lm2
+
+plot(homes_lm2)
+
+# summary(homes_lm1) to look at R2 and p values 
+
+# 0.84 R-squared means 84% of variance in price is explained by the predictor variables in this model (adjusted R squared for multiple linear agression to account for adding more variables)
+
+# summmary(homes_lm2) look at outcomes
+
+# Rsquared is 0.54 -- hmmm why is this lower than the first? we can compare looking with AIC (ideal model high fit and simple, worst model poor fit and complex)
+```
+
+
+Find the AIC value of each model
+
+lower AIC means better balance between model fit and complexity 
+
+Therefore, AIC lower is 1st. 
+
+Concerns because 1st has bad variables, maybe there is an intermediate ?
+
+```{r}
+ AIC(homes_lm1)
+AIC(homes_lm2)
+```
+
+
+```{r}
+homes_lm3 <- lm(Price ~ City + Bedrooms + Status, data = homes_sub)
+
+plot(homes_lm3)
+
+summary(homes_lm3)
+
+AIC(homes_lm3)
+```
 
